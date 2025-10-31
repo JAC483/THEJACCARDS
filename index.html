@@ -53,7 +53,7 @@
       <h2>Admin Panel</h2>
       <input type="text" id="cardName" placeholder="Card Name" />
       <input type="text" id="cardPrice" placeholder="Price" />
-      <input type="file" id="cardUpload" multiple />
+      <input type="text" id="cardImagePath" placeholder="Local image path e.g. images/card1.jpg" />
       <button onclick="addListing()">Add Listing</button>
     </section>
 
@@ -82,46 +82,22 @@
         document.getElementById("adminPassword").value = "";
       }
 
-      async function addListing() {
+      function addListing() {
         const name = document.getElementById("cardName").value;
         const price = parseFloat(document.getElementById("cardPrice").value);
-        const files = document.getElementById("cardUpload").files;
+        const imagePath = document.getElementById("cardImagePath").value;
 
-        if (!name || !price || files.length === 0) {
-          alert("Fill all fields and select images");
+        if (!name || !price || !imagePath) {
+          alert("Fill all fields and provide image path");
           return;
-        }
-
-        const uploadedUrls = [];
-        for (let file of files) {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          await new Promise((resolve) => {
-            reader.onloadend = async () => {
-              const base64Data = reader.result;
-              const res = await fetch("https://jac-cards-server.vercel.app/api/upload", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ data: base64Data }),
-              });
-              const json = await res.json();
-              uploadedUrls.push(json.url);
-              resolve();
-            };
-          });
         }
 
         const cardDiv = document.createElement("div");
         cardDiv.className = "card";
-        let imageIndex = 0;
-        const imgEl = document.createElement("img");
-        imgEl.src = uploadedUrls[imageIndex];
-        cardDiv.appendChild(imgEl);
 
-        setInterval(() => {
-          imageIndex = (imageIndex + 1) % uploadedUrls.length;
-          imgEl.src = uploadedUrls[imageIndex];
-        }, 3000);
+        const imgEl = document.createElement("img");
+        imgEl.src = imagePath; // Load from local folder
+        cardDiv.appendChild(imgEl);
 
         const nameEl = document.createElement("h3");
         nameEl.textContent = name;
@@ -145,7 +121,7 @@
 
         document.getElementById("cardName").value = "";
         document.getElementById("cardPrice").value = "";
-        document.getElementById("cardUpload").value = "";
+        document.getElementById("cardImagePath").value = "";
       }
 
       function addToCart(item) { cart.push(item); renderCart(); }
@@ -195,3 +171,4 @@
     </script>
   </body>
 </html>
+
