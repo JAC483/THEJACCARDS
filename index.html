@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>JAC CARDS</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: #121827;
+        color: #f9d342;
+        font-family: Arial, sans-serif;
+        overflow-x: hidden;
+        position: relative;
+      }
+      header {
+        background: #1c2533;
+        text-align: center;
+        padding: 20px;
+        position: relative;
+        z-index: 2;
+      }
+      header h1 {
+        font-size: 3em;
+        margin-bottom: 10px;
+      }
+      nav a {
+        color: #f9d342;
+        margin: 0 15px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 1.2em;
+        cursor: pointer;
+      }
+      #listings {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 20px;
+        position: relative;
+        z-index: 2;
+      }
+      .card {
+        background: #1c2533;
+        border: 2px solid #f9d342;
+        border-radius: 12px;
+        width: 220px;
+        margin: 15px;
+        padding: 10px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .card img {
+        max-width: 100%;
+        border-radius: 8px;
+        display: block;
+      }
+      .card button {
+        margin-top: 10px;
+        padding: 6px;
+        width: 100%;
+        border: none;
+        border-radius: 5px;
+        background: #f9d342;
+        color: #1c2533;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      #cart {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(28, 37, 51, 0.9);
+        border: 2px solid #f9d342;
+        border-radius: 10px;
+        padding: 10px;
+        z-index: 3;
+        width: 250px;
+      }
+      #cart h2 {
+        font-size: 1.3em;
+        margin-bottom: 10px;
+      }
+      #cart ul {
+        list-style: none;
+        margin-bottom: 10px;
+      }
+      #cart button {
+        width: 100%;
+        margin-top: 5px;
+      }
+      #adminContainer,
+      #passwordPrompt {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #2a3142;
+        padding: 20px;
+        border-radius: 12px;
+        z-index: 4;
+        width: 300px;
+      }
+      #adminContainer input,
+      #adminContainer button,
+      #passwordPrompt input,
+      #passwordPrompt button {
+        display: block;
+        width: 100%;
+        margin: 10px 0;
+        padding: 8px;
+        border-radius: 5px;
+        border: none;
+      }
+      #adminContainer button,
+      #passwordPrompt button {
+        background: #f9d342;
+        color: #1c2533;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      /* Neon lasers */
+      .laser {
+        position: absolute;
+        width: 3px;
+        height: 80px;
+        background: linear-gradient(to bottom, #00ffff, #ff00ff);
+        border-radius: 2px;
+        opacity: 0.9;
+        animation: shoot linear infinite;
+        z-index: 1;
+        filter: drop-shadow(0 0 8px #00ffff) drop-shadow(0 0 8px #ff00ff);
+      }
+
+      @keyframes shoot {
+        0% {
+          transform: translateX(-50px) translateY(var(--startY));
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateX(120vw) translateY(var(--startY));
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>JAC CARDS</h1>
+      <nav>
+        <a onclick="scrollToShop()">Shop</a>
+        <a onclick="showAdmin()">Admin</a>
+      </nav>
+    </header>
+
+    <section id="listings"></section>
+
+    <div id="cart">
+      <h2>Cart</h2>
+      <ul id="cartItems"></ul>
+      <p>Total: $<span id="cartTotal">0</span></p>
+      <button onclick="checkout()">Checkout with Stripe</button>
+    </div>
+
+    <div id="passwordPrompt">
+      <h2>Enter Admin Password</h2>
+      <input type="password" id="adminPassword" placeholder="Password" />
+      <button onclick="checkPassword()">Submit</button>
+      <p id="passwordError" style="color: red"></p>
+    </div>
+
+    <section id="adminContainer" style="display: none">
+      <h2>Admin Panel</h2>
+      <input type="text" id="cardName" placeholder="Card Name" />
+      <input type="text" id="cardPrice" placeholder="Price" />
+      <input
+        type="text"
+        id="cardImages"
+        placeholder="Image URLs (comma separated)"
+      />
+      <button onclick="addListing()">Add Listing</button>
+    </section>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+      const listingsContainer = document.getElementById("listings");
+      const adminContainer = document.getElementById("adminContainer");
+      const passwordPrompt = document.getElementById("passwordPrompt");
+      const passwordError = document.getElementById("passwordError");
+
+      const cartItemsContainer = document.getElementById("cartItems");
+      const cartTotalEl = document.getElementById("cartTotal");
+
+      const ADMIN_PASSWORD = "JACadmin2025";
+      let cart = [];
+
+      function scrollToShop() {
+        document
+          .getElementById("listings")
+          .scrollIntoView({ behavior: "smooth" });
+      }
+      function showAdmin() {
+        passwordPrompt.style.display = "block";
+      }
+      function checkPassword() {
+        const input = document.getElementById("adminPassword").value;
+        if (input === ADMIN_PASSWORD) {
+          passwordPrompt.style.display = "none";
+          adminContainer.style.display = "block";
+          passwordError.textContent = "";
+        } else passwordError.textContent = "Incorrect password!";
+        document.getElementById("adminPassword").value = "";
+      }
+
+      function addListing() {
+        const name = document.getElementById("cardName").value;
+        const price = parseFloat(document.getElementById("cardPrice").value);
+        const images = document
+          .getElementById("cardImages")
+          .value.split(",")
+          .map((i) => i.trim());
+        if (!name || !price || images.length === 0) {
+          alert("Fill all fields");
+          return;
+        }
+        const cardDiv = document.createElement("div");
+        cardDiv.className = "card";
+        let imageIndex = 0;
+        const imgEl = document.createElement("img");
+        imgEl.src = images[imageIndex];
+        cardDiv.appendChild(imgEl);
+        setInterval(() => {
+          imageIndex = (imageIndex + 1) % images.length;
+          imgEl.src = images[imageIndex];
+        }, 3000);
+        const nameEl = document.createElement("h3");
+        nameEl.textContent = name;
+        const priceEl = document.createElement("p");
+        priceEl.textContent = `Price: $${price.toFixed(2)}`;
+        const addBtn = document.createElement("button");
+        addBtn.textContent = "Add to Cart";
+        addBtn.onclick = () => addToCart({ name, price });
+
+        // Remove Listing Button
+        const removeBtn = document.createElement("button");
+        removeBtn.textContent = "Remove Listing";
+        removeBtn.style.background = "#ff4d4d";
+        removeBtn.style.color = "white";
+        removeBtn.onclick = () => cardDiv.remove();
+
+        cardDiv.appendChild(nameEl);
+        cardDiv.appendChild(priceEl);
+        cardDiv.appendChild(addBtn);
+        cardDiv.appendChild(removeBtn);
+        listingsContainer.appendChild(cardDiv);
+        document.getElementById("cardName").value = "";
+        document.getElementById("cardPrice").value = "";
+        document.getElementById("cardImages").value = "";
+      }
+
+      function addToCart(item) {
+        cart.push(item);
+        renderCart();
+      }
+
+      function removeFromCart(index) {
+        cart.splice(index, 1);
+        renderCart();
+      }
+
+      function renderCart() {
+        cartItemsContainer.innerHTML = "";
+        let total = 0;
+        cart.forEach((i, index) => {
+          const li = document.createElement("li");
+          li.textContent = `${i.name} - $${i.price.toFixed(2)} `;
+
+          const removeBtn = document.createElement("button");
+          removeBtn.textContent = "❌";
+          removeBtn.style.background = "transparent";
+          removeBtn.style.color = "#f9d342";
+          removeBtn.style.border = "none";
+          removeBtn.style.cursor = "pointer";
+          removeBtn.style.float = "right";
+          removeBtn.onclick = () => removeFromCart(index);
+
+          li.appendChild(removeBtn);
+          cartItemsContainer.appendChild(li);
+          total += i.price;
+        });
+        cartTotalEl.textContent = total.toFixed(2);
+      }
+
+      async function checkout() {
+        if (cart.length === 0) {
+          alert("Cart empty");
+          return;
+        }
+        const response = await fetch(
+          "http://localhost:3000/create-checkout-session",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ cart }),
+          }
+        );
+        const session = await response.json();
+        const stripe = Stripe(
+          "pk_live_51SNmtxRKwxVF85LUA6cwkmPfOYVVB7cq1LwHEmLe0snshGL6r4q3UgN2evvA9fJ1ysGwHm7L9hgeicVP6jknzdct003hQO51KP"
+        );
+        await stripe.redirectToCheckout({ sessionId: session.id });
+      }
+
+      // Neon lasers
+      for (let i = 0; i < 25; i++) {
+        const laser = document.createElement("div");
+        laser.className = "laser";
+        laser.style.setProperty(
+          "--startY",
+          Math.random() * window.innerHeight + "px"
+        );
+        laser.style.animationDuration = Math.random() * 1 + 0.5 + "s";
+        laser.style.height = Math.random() * 60 + 40 + "px";
+        laser.style.left = "-50px";
+        document.body.appendChild(laser);
+      }
+    </script>
+  </body>
+</html>
