@@ -1,155 +1,27 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <title>JAC CARDS</title>
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      body {
-        background: #121827;
-        color: #f9d342;
-        font-family: Arial, sans-serif;
-        overflow-x: hidden;
-        position: relative;
-      }
-      header {
-        background: #1c2533;
-        text-align: center;
-        padding: 20px;
-        position: relative;
-        z-index: 2;
-      }
-      header h1 {
-        font-size: 3em;
-        margin-bottom: 10px;
-      }
-      nav a {
-        color: #f9d342;
-        margin: 0 15px;
-        text-decoration: none;
-        font-weight: bold;
-        font-size: 1.2em;
-        cursor: pointer;
-      }
-      #listings {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        padding: 20px;
-        position: relative;
-        z-index: 2;
-      }
-      .card {
-        background: #1c2533;
-        border: 2px solid #f9d342;
-        border-radius: 12px;
-        width: 220px;
-        margin: 15px;
-        padding: 10px;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-      }
-      .card img {
-        max-width: 100%;
-        border-radius: 8px;
-        display: block;
-      }
-      .card button {
-        margin-top: 10px;
-        padding: 6px;
-        width: 100%;
-        border: none;
-        border-radius: 5px;
-        background: #f9d342;
-        color: #1c2533;
-        font-weight: bold;
-        cursor: pointer;
-      }
-      #cart {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: rgba(28, 37, 51, 0.9);
-        border: 2px solid #f9d342;
-        border-radius: 10px;
-        padding: 10px;
-        z-index: 3;
-        width: 250px;
-      }
-      #cart h2 {
-        font-size: 1.3em;
-        margin-bottom: 10px;
-      }
-      #cart ul {
-        list-style: none;
-        margin-bottom: 10px;
-      }
-      #cart button {
-        width: 100%;
-        margin-top: 5px;
-      }
-      #adminContainer,
-      #passwordPrompt {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: #2a3142;
-        padding: 20px;
-        border-radius: 12px;
-        z-index: 4;
-        width: 300px;
-      }
-      #adminContainer input,
-      #adminContainer button,
-      #passwordPrompt input,
-      #passwordPrompt button {
-        display: block;
-        width: 100%;
-        margin: 10px 0;
-        padding: 8px;
-        border-radius: 5px;
-        border: none;
-      }
-      #adminContainer button,
-      #passwordPrompt button {
-        background: #f9d342;
-        color: #1c2533;
-        font-weight: bold;
-        cursor: pointer;
-      }
-
-      /* Neon lasers */
-      .laser {
-        position: absolute;
-        width: 3px;
-        height: 80px;
-        background: linear-gradient(to bottom, #00ffff, #ff00ff);
-        border-radius: 2px;
-        opacity: 0.9;
-        animation: shoot linear infinite;
-        z-index: 1;
-        filter: drop-shadow(0 0 8px #00ffff) drop-shadow(0 0 8px #ff00ff);
-      }
-
-      @keyframes shoot {
-        0% {
-          transform: translateX(-50px) translateY(var(--startY));
-          opacity: 0;
-        }
-        10% {
-          opacity: 1;
-        }
-        100% {
-          transform: translateX(120vw) translateY(var(--startY));
-          opacity: 0;
-        }
-      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { background: #121827; color: #f9d342; font-family: Arial, sans-serif; overflow-x: hidden; position: relative; }
+      header { background: #1c2533; text-align: center; padding: 20px; position: relative; z-index: 2; }
+      header h1 { font-size: 3em; margin-bottom: 10px; }
+      nav a { color: #f9d342; margin: 0 15px; text-decoration: none; font-weight: bold; font-size: 1.2em; cursor: pointer; }
+      #listings { display: flex; flex-wrap: wrap; justify-content: center; padding: 20px; position: relative; z-index: 2; }
+      .card { background: #1c2533; border: 2px solid #f9d342; border-radius: 12px; width: 220px; margin: 15px; padding: 10px; text-align: center; position: relative; overflow: hidden; }
+      .card img { max-width: 100%; border-radius: 8px; display: block; }
+      .card button { margin-top: 10px; padding: 6px; width: 100%; border: none; border-radius: 5px; background: #f9d342; color: #1c2533; font-weight: bold; cursor: pointer; }
+      #cart { position: fixed; top: 20px; right: 20px; background: rgba(28, 37, 51, 0.9); border: 2px solid #f9d342; border-radius: 10px; padding: 10px; z-index: 3; width: 250px; }
+      #cart h2 { font-size: 1.3em; margin-bottom: 10px; }
+      #cart ul { list-style: none; margin-bottom: 10px; }
+      #cart button { width: 100%; margin-top: 5px; }
+      #adminContainer, #passwordPrompt { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #2a3142; padding: 20px; border-radius: 12px; z-index: 4; width: 300px; }
+      #adminContainer input, #adminContainer button, #passwordPrompt input, #passwordPrompt button { display: block; width: 100%; margin: 10px 0; padding: 8px; border-radius: 5px; border: none; }
+      #adminContainer button, #passwordPrompt button { background: #f9d342; color: #1c2533; font-weight: bold; cursor: pointer; }
+      .laser { position: absolute; width: 3px; height: 80px; background: linear-gradient(to bottom, #00ffff, #ff00ff); border-radius: 2px; opacity: 0.9; animation: shoot linear infinite; z-index: 1; filter: drop-shadow(0 0 8px #00ffff) drop-shadow(0 0 8px #ff00ff); }
+      @keyframes shoot { 0% { transform: translateX(-50px) translateY(var(--startY)); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateX(120vw) translateY(var(--startY)); opacity: 0; } }
     </style>
   </head>
   <body>
@@ -181,11 +53,7 @@
       <h2>Admin Panel</h2>
       <input type="text" id="cardName" placeholder="Card Name" />
       <input type="text" id="cardPrice" placeholder="Price" />
-      <input
-        type="text"
-        id="cardImages"
-        placeholder="Image URLs (comma separated)"
-      />
+      <input type="file" id="cardUpload" multiple />
       <button onclick="addListing()">Add Listing</button>
     </section>
 
@@ -202,14 +70,8 @@
       const ADMIN_PASSWORD = "JACadmin2025";
       let cart = [];
 
-      function scrollToShop() {
-        document
-          .getElementById("listings")
-          .scrollIntoView({ behavior: "smooth" });
-      }
-      function showAdmin() {
-        passwordPrompt.style.display = "block";
-      }
+      function scrollToShop() { document.getElementById("listings").scrollIntoView({ behavior: "smooth" }); }
+      function showAdmin() { passwordPrompt.style.display = "block"; }
       function checkPassword() {
         const input = document.getElementById("adminPassword").value;
         if (input === ADMIN_PASSWORD) {
@@ -220,27 +82,47 @@
         document.getElementById("adminPassword").value = "";
       }
 
-      function addListing() {
+      async function addListing() {
         const name = document.getElementById("cardName").value;
         const price = parseFloat(document.getElementById("cardPrice").value);
-        const images = document
-          .getElementById("cardImages")
-          .value.split(",")
-          .map((i) => i.trim());
-        if (!name || !price || images.length === 0) {
-          alert("Fill all fields");
+        const files = document.getElementById("cardUpload").files;
+
+        if (!name || !price || files.length === 0) {
+          alert("Fill all fields and select images");
           return;
         }
+
+        const uploadedUrls = [];
+        for (let file of files) {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          await new Promise((resolve) => {
+            reader.onloadend = async () => {
+              const base64Data = reader.result;
+              const res = await fetch("https://jac-cards-server.vercel.app/api/upload", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ data: base64Data }),
+              });
+              const json = await res.json();
+              uploadedUrls.push(json.url);
+              resolve();
+            };
+          });
+        }
+
         const cardDiv = document.createElement("div");
         cardDiv.className = "card";
         let imageIndex = 0;
         const imgEl = document.createElement("img");
-        imgEl.src = images[imageIndex];
+        imgEl.src = uploadedUrls[imageIndex];
         cardDiv.appendChild(imgEl);
+
         setInterval(() => {
-          imageIndex = (imageIndex + 1) % images.length;
-          imgEl.src = images[imageIndex];
+          imageIndex = (imageIndex + 1) % uploadedUrls.length;
+          imgEl.src = uploadedUrls[imageIndex];
         }, 3000);
+
         const nameEl = document.createElement("h3");
         nameEl.textContent = name;
         const priceEl = document.createElement("p");
@@ -249,7 +131,6 @@
         addBtn.textContent = "Add to Cart";
         addBtn.onclick = () => addToCart({ name, price });
 
-        // Remove Listing Button
         const removeBtn = document.createElement("button");
         removeBtn.textContent = "Remove Listing";
         removeBtn.style.background = "#ff4d4d";
@@ -261,20 +142,14 @@
         cardDiv.appendChild(addBtn);
         cardDiv.appendChild(removeBtn);
         listingsContainer.appendChild(cardDiv);
+
         document.getElementById("cardName").value = "";
         document.getElementById("cardPrice").value = "";
-        document.getElementById("cardImages").value = "";
+        document.getElementById("cardUpload").value = "";
       }
 
-      function addToCart(item) {
-        cart.push(item);
-        renderCart();
-      }
-
-      function removeFromCart(index) {
-        cart.splice(index, 1);
-        renderCart();
-      }
+      function addToCart(item) { cart.push(item); renderCart(); }
+      function removeFromCart(index) { cart.splice(index, 1); renderCart(); }
 
       function renderCart() {
         cartItemsContainer.innerHTML = "";
@@ -282,7 +157,6 @@
         cart.forEach((i, index) => {
           const li = document.createElement("li");
           li.textContent = `${i.name} - $${i.price.toFixed(2)} `;
-
           const removeBtn = document.createElement("button");
           removeBtn.textContent = "❌";
           removeBtn.style.background = "transparent";
@@ -291,7 +165,6 @@
           removeBtn.style.cursor = "pointer";
           removeBtn.style.float = "right";
           removeBtn.onclick = () => removeFromCart(index);
-
           li.appendChild(removeBtn);
           cartItemsContainer.appendChild(li);
           total += i.price;
@@ -300,22 +173,14 @@
       }
 
       async function checkout() {
-        if (cart.length === 0) {
-          alert("Cart empty");
-          return;
-        }
-        const response = await fetch(
-          "https://jac-cards-server.vercel.app/create-checkout-session",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ cart }),
-          }
-        );
+        if (cart.length === 0) { alert("Cart empty"); return; }
+        const response = await fetch("https://jac-cards-server.vercel.app/create-checkout-session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ cart }),
+        });
         const session = await response.json();
-        const stripe = Stripe(
-          "pk_live_51SNmtxRKwxVF85LUA6cwkmPfOYVVB7cq1LwHEmLe0snshGL6r4q3UgN2evvA9fJ1ysGwHm7L9hgeicVP6jknzdct003hQO51KP"
-        );
+        const stripe = Stripe("pk_live_51SNmtxRKwxVF85LUA6cwkmPfOYVVB7cq1LwHEmLe0snshGL6r4q3UgN2evvA9fJ1ysGwHm7L9hgeicVP6jknzdct003hQO51KP");
         await stripe.redirectToCheckout({ sessionId: session.id });
       }
 
@@ -323,13 +188,8 @@
       for (let i = 0; i < 25; i++) {
         const laser = document.createElement("div");
         laser.className = "laser";
-        laser.style.setProperty(
-          "--startY",
-          Math.random() * window.innerHeight + "px"
-        );
-        laser.style.animationDuration = Math.random() * 1 + 0.5 + "s";
-        laser.style.height = Math.random() * 60 + 40 + "px";
-        laser.style.left = "-50px";
+        laser.style.setProperty("--startY", Math.random() * window.innerHeight + "px");
+        laser.style.animationDuration = (Math.random() * 3 + 2) + "s";
         document.body.appendChild(laser);
       }
     </script>
