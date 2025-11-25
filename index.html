@@ -63,6 +63,7 @@
 <script>
 const ADMIN_PASSWORD = "JACadmin2025";
 
+const listingsContainer = document.getElementById("listings");   // 🔧 FIXED
 let cart = [];
 let listings = JSON.parse(localStorage.getItem("jac_listings") || "[]");
 
@@ -194,7 +195,7 @@ function renderCart() {
   cartTotal.textContent = total.toFixed(2);
 }
 
-// Stripe Checkout with YOUR publishable key
+// ⭐ Stripe Checkout with YOUR publishable key
 document.getElementById("checkout-button").addEventListener("click", async () => {
   if (cart.length === 0) { 
     alert("Cart is empty!"); 
@@ -210,7 +211,6 @@ document.getElementById("checkout-button").addEventListener("click", async () =>
 
     const session = await response.json();
 
-    // ⭐ Your publishable Stripe key
     const stripe = Stripe("pk_live_51SNmtxRKwxVF85LUA6cwkmPfOYVVB7cq1LwHEmLe0snshGL6r4q3UgN2evvA9fJ1ysGwHm7L9hgeicVP6jknzdct003hQO51KP");
 
     await stripe.redirectToCheckout({ sessionId: session.id });
